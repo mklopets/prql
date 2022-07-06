@@ -12,6 +12,3 @@ CREATE TABLE playlists(playlist_id INTEGER, "name" VARCHAR);
 CREATE TABLE media_types(media_type_id INTEGER, "name" VARCHAR);
 CREATE TABLE artists(artist_id INTEGER, "name" VARCHAR);
 CREATE TABLE invoice_items(invoice_line_id INTEGER, invoice_id INTEGER, track_id INTEGER, unit_price DOUBLE, quantity INTEGER);
-
-
-
