@@ -4,7 +4,8 @@ FROM ubuntu
 COPY test .
 COPY src/ src/
 
-# also insert sqlite database
+# also insert chinook database
 COPY chinook.db .
+COPY chinook/ .
 
 ENTRYPOINT test

@@ -8,7 +8,7 @@ edition = "2021"
 [dev-dependencies]
 prql-compiler = {path = "../prql-compiler"}
 insta = {version = "1.14.0", features = ["colors", "glob"]}
-rusqlite = { version = "0.27.0", features = ["bundled"] }
+rusqlite = {version = "0.27.0", features = ["bundled"]}
 postgres = "0.19.3"
 chrono = "0.4.19"
-duckdb = "0.4.0"
+duckdb = {version="0.4.0", features = ["bundled"]}

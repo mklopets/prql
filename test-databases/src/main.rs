@@ -9,6 +9,7 @@ mod tests {
     #[test]
     fn test() {
         let mut pg_client = postgres::connect();
+        let duckdb_conn = duckdb::connect();
         let sqlite_conn = sqlite::connect();
 
         // for each of the queries
@@ -25,6 +26,7 @@ mod tests {
 
             // save both csv files as same snapshot
             assert_snapshot!("", sqlite::query_csv(&sqlite_conn, &sql));
+            assert_snapshot!("", duckdb::query_csv(&duckdb_conn, &sql));
 
             if let Some(pg_client) = &mut pg_client {
                 assert_snapshot!("", postgres::query_csv(pg_client, &sql));
@@ -56,6 +58,59 @@ mod tests {
                             ValueRef::Real(r) => r.to_string(),
                             ValueRef::Text(t) => String::from_utf8_lossy(t).to_string(),
                             ValueRef::Blob(_) => unimplemented!(),
+                        })
+                        .collect::<Vec<_>>()
+                        .join("\t"))
+                })
+                .unwrap()
+                .into_iter()
+                .take(100) // truncate to 100 rows
+                .map(|r| r.unwrap())
+                .collect::<Vec<String>>()
+                .join("\n");
+
+            csv_header + "\n" + &csv_rows
+        }
+    }
+
+    mod duckdb {
+        use duckdb::{types::ValueRef, Connection};
+
+        pub fn connect() -> Connection {
+            let conn = Connection::open_in_memory().unwrap();
+            conn.execute_batch(&r#"
+            LOAD 'parquet';
+            CREATE VIEW albums AS SELECT * FROM read_parquet('chinook/albums.parquet');
+            CREATE VIEW artists AS SELECT * FROM read_parquet('chinook/artists.parquet');
+            CREATE VIEW customers AS SELECT * FROM read_parquet('chinook/customers.parquet');
+            CREATE VIEW employees AS SELECT * FROM read_parquet('chinook/employees.parquet');
+            CREATE VIEW genres AS SELECT * FROM read_parquet('chinook/genres.parquet');
+            CREATE VIEW invoice_items AS SELECT * FROM read_parquet('chinook/invoice_items.parquet');
+            CREATE VIEW invoices AS SELECT * FROM read_parquet('chinook/invoices.parquet');
+            CREATE VIEW media_types AS SELECT * FROM read_parquet('chinook/media_types.parquet');
+            CREATE VIEW playlist_track AS SELECT * FROM read_parquet('chinook/playlist_track.parquet');
+            CREATE VIEW playlists AS SELECT * FROM read_parquet('chinook/playlists.parquet');
+            CREATE VIEW tracks AS SELECT * FROM read_parquet('chinook/tracks.parquet');
+            "#).unwrap();
+            conn
+        }
+
+        pub fn query_csv(conn: &Connection, sql: &str) -> String {
+            let mut statement = conn.prepare(sql).unwrap();
+
+            let csv_header = statement.column_names().join("\t");
+            let column_count = statement.column_count();
+
+            let csv_rows = statement
+                .query_map([], |row| {
+                    Ok((0..column_count)
+                        .map(|i| match row.get_ref_unwrap(i) {
+                            ValueRef::Null => "".to_string(),
+                            ValueRef::Int(i) => i.to_string(),
+                            ValueRef::Float(r) => r.to_string(),
+                            ValueRef::Double(r) => r.to_string(),
+                            ValueRef::Text(t) => String::from_utf8_lossy(t).to_string(),
+                            _ => unimplemented!(),
                         })
                         .collect::<Vec<_>>()
                         .join("\t"))

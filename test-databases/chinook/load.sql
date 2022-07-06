@@ -1,0 +1,11 @@
+COPY invoices FROM 'duckdb.parquet.gz/invoices.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY customers FROM 'duckdb.parquet.gz/customers.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY employees FROM 'duckdb.parquet.gz/employees.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY tracks FROM 'duckdb.parquet.gz/tracks.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY albums FROM 'duckdb.parquet.gz/albums.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY genres FROM 'duckdb.parquet.gz/genres.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY playlist_track FROM 'duckdb.parquet.gz/playlist_track.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY playlists FROM 'duckdb.parquet.gz/playlists.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY media_types FROM 'duckdb.parquet.gz/media_types.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY artists FROM 'duckdb.parquet.gz/artists.parquet' (FORMAT 'parquet', CODEC 'GZIP');
+COPY invoice_items FROM 'duckdb.parquet.gz/invoice_items.parquet' (FORMAT 'parquet', CODEC 'GZIP');
