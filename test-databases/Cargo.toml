@@ -5,7 +5,7 @@ version = "0.1.0"
 
 [dev-dependencies]
 chrono = "0.4"
-insta = {version = "1.14.0", features = ["colors", "glob"]}
+insta = {version = "1.16.0", features = ["colors", "glob"]}
 prql-compiler = {path = "../prql-compiler"}
 
 [target.'cfg(not(target_family="wasm"))'.dev-dependencies]
