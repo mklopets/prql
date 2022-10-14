@@ -115,7 +115,7 @@ single_quote = _{ "\"" | "'" }
 multi_quote = _{ "\""{3,} | "'"{3,} }
 opening_quote = _{ PUSH(multi_quote) | PUSH(single_quote) }
 // PEEK refers to the opening quote; `"` or `'` or multiple quotes.
-string_inner = { ( !( PEEK ) ~ ANY )+ }
+string_inner = { ( !( PEEK ) ~ ANY )* }
 // Either > 3 quotes, or just one. Currently both of those can be multiline.
 string = ${ opening_quote ~ string_inner ~ POP }
 
