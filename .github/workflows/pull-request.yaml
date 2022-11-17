@@ -54,7 +54,7 @@ jobs:
           # https://github.com/actions-rs/toolchain/issues/126
           toolchain: stable
       - name: 💰 Cache
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
       - uses: peaceiris/actions-mdbook@v1
       - name: 🔨 Build
         run: mdbook build
